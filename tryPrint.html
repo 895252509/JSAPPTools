@@ -9,6 +9,8 @@
     <script src="js/jslib/jquery-3.2.1.min.js"></script>
     <script src="js/jslib/i18next-1.11.2/i18next-1.11.2.min.js"></script>
 
+    <script src="js/jntci.print.js"></script>
+
     <style>
 
     </style>
@@ -18,7 +20,7 @@
 
             i18n.init({
                 lng: 'en-US',
-                resGetPath: "json/i18n/translation-zh-CN.json"
+                resGetPath: "json/i18n/translation-en-US.json"
             }, function(err, t) {
                 // translate nav
                 $(".nav").i18n();
@@ -27,12 +29,30 @@
                 var appName = t("app.name");
             });
 
+
+
         });
+
+        function prrview() {
+            jntci_print.printPreView(function() {
+                i18n.init({
+                    lng: 'en-US',
+                    resGetPath: "json/i18n/translation-en-US.json"
+                }, function(err, t) {
+                    // translate nav
+                    $(".nav").i18n();
+
+                    // programatical access
+                    var appName = t("app.name");
+                });
+            }, "#printDiv");
+        }
     </script>
 </head>
 
 <body>
-    <ul class="nav">
+    <button onclick="prrview();">打印预览</button>
+    <ul class="nav" id="printDiv">
         <li>
             <a href="#" data-i18n="nav.home"></a>
         </li>
