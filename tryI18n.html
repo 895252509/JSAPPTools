@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>JSAPPTools</title>
     <link rel="stylesheet" href="style/style.css">
-    <script src="js/jslib/jquery-3.2.1.min.js"></script>
-    <script src="js/jslib/"></script>
+    <script src="js/jslib/jquery-1.7.1.min.js"></script>
+    <script src="js/jslib/jquery.i18n.properties.min.js"></script>
     <style>
 
     </style>
@@ -15,19 +15,15 @@
     <script>
         $(document).ready(function() {
 
-            i18n.init({
-                lng: 'en-US',
-                resGetPath: "json/i18n/translation-en-US.json"
-            }, function(err, t) {
-                // translate nav
-                $(".nav").i18n();
-
-                // programatical access
-                var appName = t("app.name");
+            jQuery.i18n.properties({
+                name: ["strings", "strings_zh_CN"], //资源文件名称
+                path: 'resource/i18n/', //资源文件路径
+                language: "zh_CN",
+                callback: function() { //加载成功后设置显示内容
+                    alert("search");
+                    alert($.i18n.prop("search"));
+                }
             });
-
-
-
         });
     </script>
 </head>
