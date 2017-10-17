@@ -12,10 +12,39 @@
     <style>
 
     </style>
+
+    <script>
+        $(document).ready(function() {
+
+            i18n.init({
+                lng: 'en-US',
+                resGetPath: "json/i18n/translation-zh-CN.json"
+            }, function(err, t) {
+                // translate nav
+                $(".nav").i18n();
+
+                // programatical access
+                var appName = t("app.name");
+            });
+
+        });
+    </script>
 </head>
 
 <body>
-
+    <ul class="nav">
+        <li>
+            <a href="#" data-i18n="nav.home"></a>
+        </li>
+        <li>
+            <a href="#" data-i18n="nav.page1"></a>
+        </li>
+        <li>
+            <a href="#" data-i18n="nav.page2"></a>
+        </li>
+        <input data-i18n="[value]nav.button" type="button" value="查询" id="" />
+        <input type="text" name="" id="" data-i18n="[placeholder]nav.input" placeholder="请输入名称" />
+    </ul>
 
 </body>
 
