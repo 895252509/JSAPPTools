@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>JSAPPTools</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="js/jslib/jquery-3.2.1.min.js"></script>
+    <style>
+
+    </style>
+
+    <script>
+        var defevent = {};
+
+        function event(id) {
+            var dom = document.getElementById(id);
+            for (var name in dom) {
+                if (name.substring(0, 2) === "on") {
+                    defevent[name] = dom[name];
+                    dom[name] = adapterEvent;
+                }
+            }
+        }
+
+        function adapterEvent(e) {
+            var clipboardData = e.clipboardData || window.clipboardData;
+            console.log(e.type);
+            switch (e.type) {
+                case "beforepaste":
+                    alert(clipboardData.getData("text"));
+                    break;
+                default:
+                    break;
+            }
+        }
+        $(document).ready(function() {
+
+            event("a");
+        });
+    </script>
+</head>
+
+<body>
+    <input id="a" />
+</body>
+
+</html>
