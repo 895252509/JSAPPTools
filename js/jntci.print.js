@@ -20,7 +20,7 @@ jntci_print = (function(window) {
     var objectHtml = "<OBJECT classid='CLSID:8856F961-340A-11D0-A96B-00C04FD705A2' height='0' id='WebBrowser' name='wb' width='0'></OBJECT>";
     if (typeof window._Wsh === "undefined") {
         try {
-            window._Wsh = new ActiveXObject("WScript.Shell");
+            window._Wsh = new ActiveXObject("WScript.Shell") || CreateObject("WScript.Shell");
         } catch (err) {
             alert("请您使用IE8及以上版本浏览器，否则不能正常使用打印功能。");
         }
@@ -28,25 +28,28 @@ jntci_print = (function(window) {
     }
     //注册表值
     function RegValue() {
-        this.footer = "";
-        this.header = "";
-        this.margin_bottom = "";
-        this.margin_left = "";
-        this.margin_right = "";
-        this.margin_top = "";
-        this.Shrink_To_Fit = "";
+        this.footer = null;
+        this.header = null;
+        this.margin_bottom = null;
+        this.margin_left = null;
+        this.margin_right = null;
+        this.margin_top = null;
+        this.Shrink_To_Fit = null;
+        this.Print_Background = null;
     }
+
+    var defregvalue = new RegValue();
+    defregvalue.footer = "";
+    defregvalue.header = "&b&p/&P";
+    defregvalue.margin_bottom = "0.3";
+    defregvalue.margin_left = "0.3";
+    defregvalue.margin_right = "0.3";
+    defregvalue.margin_top = "0.3";
+    defregvalue.Shrink_To_Fit = "yes";
+    defregvalue.Print_Background = "yes";
 
     function _getIEPrintReg() {
         var regvalue = new RegValue();
-        var defregvalue = new RegValue();
-        defregvalue.footer = "yes";
-        defregvalue.header = "yes";
-        defregvalue.margin_bottom = "0.4";
-        defregvalue.margin_left = "0.4";
-        defregvalue.margin_right = "0.4";
-        defregvalue.margin_top = "0.4";
-        defregvalue.Shrink_To_Fit = "yes";
 
         if (!_Wsh) throw Error("\tat jntci.print.js -> _getIEPrintReg -> 无法创建shell");
         var HKEY_Root, HKEY_Path, HKEY_Key;
@@ -72,24 +75,20 @@ jntci_print = (function(window) {
         }
     }
 
-    function _preprint(precall, dom, btn, arg) {
+    function _preprint(dom, btn, arg, args, precall) {
         //参数检验
         if (typeof dom != "string") throw Error("\tat jntci.print.js -> _print -> 参数不正确");
-
-        //备份注册表值
+        if (args != null)
+            if (!args instanceof RegValue) throw Error("\tat jntci.print.js -> _print -> 参数不正确");
+            //备份注册表值
         var oldReg = _getIEPrintReg();
-        //获取一份注册表值
-        var newReg = _getIEPrintReg();
-        newReg.footer = ""; //页脚隐藏
-        newReg.header = ""; //页眉隐藏
-        newReg.margin_bottom = "0"; //页边距
-        newReg.margin_left = "0";
-        newReg.margin_right = "0";
-        newReg.margin_top = "0";
-        newReg.Shrink_To_Fit = "no"; //预览的缩放模式 100%
-        _setIEPrintReg(newReg);
+
+        // newReg.footer = "&u&b&d"; //页脚隐藏
+        // newReg.header = "&w&b &p/&P"; //页眉隐藏
+
+        _setIEPrintReg(args || defregvalue);
         //隐藏点击的按钮
-        if (typeof btn != "undefined") $(btn)[0].style.display = "none";
+        if (typeof btn != "undefined" && btn != null) $(btn)[0].style.display = "none";
         var _printDom = $(dom);
         var _bodyDomHtml = window.document.body.innerHTML;
         var _printDomHtml = _printDom[0].outerHTML;
@@ -99,24 +98,25 @@ jntci_print = (function(window) {
         WebBrowser.ExecWB(arg, 1);
         window.document.body.innerHTML = _bodyDomHtml;
 
-        if (typeof btn != "undefined") $(btn)[0].style.display = "block";
+        if (typeof btn != "undefined" && btn != null) $(btn)[0].style.display = "block";
         //恢复注册表
         setTimeout(function() {
             _setIEPrintReg(oldReg);
         }, 50);
     }
 
-    function _print(precall, dom, btn) {
+    function _print(dom, btn, args, precall) {
         if (typeof window._Wsh === "undefined") return;
-        _preprint(precall, dom, btn, 6);
+        _preprint(dom, btn, 6, args, precall);
     }
 
-    function _printPreView(precall, dom, btn) {
+    function _printPreView(dom, btn, args, precall) {
         if (typeof window._Wsh === "undefined") return;
-        _preprint(precall, dom, btn, 7);
+        _preprint(dom, btn, 7, args, precall);
     }
     return {
         printPreView: _printPreView,
-        print: _print
+        print: _print,
+        getIEPrintReg: _getIEPrintReg
     }
 })(window);
