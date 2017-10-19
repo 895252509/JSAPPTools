@@ -3,11 +3,12 @@
 
 引入本js
 使用 jntci_print.printPreView 调用打印预览
-    jntci_print.print 调用印
-	
+    jntci_print.print 调用打印
+	jntci_print.getIEPrintReg() 获取一个对象，对象的属性是打印设置的注册表值，可以用来设置打印属性
 param
 	1. 选择器	
-	2. （option）  按钮选择器//如果打印按钮在页面上，就要隐藏掉
+    2. （option）  按钮选择器//如果打印按钮在页面上，就要隐藏掉
+    3. 可选的参数 打印设置注册表对象  应该是jntci_print.getIEPrintReg()的返回值
 
 by:zhouxiang 2017/10/17
 
