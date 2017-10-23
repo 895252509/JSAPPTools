@@ -21,7 +21,7 @@ jntci_richtext = (function(window) {
         }
     }
 
-    function _doSamething() {
+    function _doSamething(url) {
         _divDom.oncontextmenu = function(e) {
             var ifrom = document.createElement("form");
             ifrom.style.display = "none";
@@ -35,7 +35,30 @@ jntci_richtext = (function(window) {
             fileinput.id = "jntci_richtext_fileupoad";
             fileinput.setAttribute("accept", ".png,.bmp,.jpg");
             fileinput.oninput = function() {
-                ifrom.submit();
+                //ifrom.submit();
+                if (typeof $ !== "undefined") {
+
+                    function uploadPic() {
+                        //上传图片 异步的  	Jquery.form.js
+                        var options = {
+                            url: url,
+                            type: "post",
+                            dataType: "json",
+                            success: function(data) {
+                                //多图片回显
+                                var src = "< img src='" + data.path + "' height=‘100’ width=‘100’/>";
+                                $("#tab").append(src);
+                                alert(data.path);
+                            }
+                        }
+                        $("#iform").ajaxSubmit(options);
+                    }
+
+                    $("#jntci_richtext_fileupoad").on("input", function() {
+                        uploadPic();
+                    });
+                }
+
                 document.body.removeChild(btnfileinput);
                 document.body.removeChild(ifrom);
             }
@@ -57,14 +80,14 @@ jntci_richtext = (function(window) {
         }
     }
 
-    function refresh(id) {
+    function refresh(id, url) {
         _getIEVersion();
         _divDom = document.querySelector(id);
         _divDom.contentEditable = "true";
-        _doSamething();
+        _doSamething(url);
     }
 
     return {
         refresh: refresh
     }
-})(window);
+})(window, jQuery);
