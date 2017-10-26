@@ -25,44 +25,38 @@ jntci_richtext = (function(window) {
         _divDom.oncontextmenu = function(e) {
             var ifrom = document.createElement("form");
             ifrom.style.display = "none";
-            ifrom.setAttribute("action", "#");
-            ifrom.setAttribute("method", "post");
-            ifrom.onsubmit = function() {
-                //alert("提交");
-            }
+            ifrom.id = "jntci_richtext_iform";
             var fileinput = document.createElement("input");
+            ifrom.appendChild(fileinput);
             fileinput.type = "file";
+            fileinput.name = "ifile";
             fileinput.id = "jntci_richtext_fileupoad";
             fileinput.setAttribute("accept", ".png,.bmp,.jpg");
             fileinput.oninput = function() {
                 //ifrom.submit();
                 if (typeof $ !== "undefined") {
-
-                    function uploadPic() {
-                        //上传图片 异步的  	Jquery.form.js
-                        var options = {
-                            url: url,
-                            type: "post",
-                            dataType: "json",
-                            success: function(data) {
-                                //多图片回显
-                                var src = "< img src='" + data.path + "' height=‘100’ width=‘100’/>";
-                                $("#tab").append(src);
-                                alert(data.path);
-                            }
+                    //上传图片 异步的  	Jquery.form.js
+                    var options = {
+                        url: url,
+                        type: "post",
+                        dataType: "json",
+                        success: function(data) {
+                            //多图片回显
+                            var src = "< img src='" + data.Data.imgPath + "' height=‘100’ width=‘100’/>";
+                            var img = document.createElement("img");
+                            img.src = data.Data.imgPath;
+                            img.style.height = "100px";
+                            img.style.width = "100px";
+                            _divDom.appendChild(img);
+                            document.body.removeChild(btnfileinput);
+                            document.body.removeChild(ifrom);
                         }
-                        $("#iform").ajaxSubmit(options);
                     }
+                    $("#jntci_richtext_iform").ajaxSubmit(options);
 
-                    $("#jntci_richtext_fileupoad").on("input", function() {
-                        uploadPic();
-                    });
                 }
-
-                document.body.removeChild(btnfileinput);
-                document.body.removeChild(ifrom);
             }
-            ifrom.appendChild(fileinput);
+
             var btnfileinput = document.createElement("lable");
             btnfileinput.style.position = "absolute";
             btnfileinput.style.display = "block";
